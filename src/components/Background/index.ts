@@ -1,0 +1,1 @@
+export {default as GradientBottom} from './GradientBottom';
