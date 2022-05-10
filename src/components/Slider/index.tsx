@@ -2,24 +2,24 @@ import React, { useRef, useState } from 'react'
 import { Button, Typography } from '@mui/material';
 import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRounded';
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
-import { Movie } from '@/types'
+import { Movie, Serie } from '@/types'
 import { getImgUrl } from '@/utils/getUrl';
 import theme from '@/styles';
-import { PreviewCard } from '@/components';
+import { PreviewCard, Image } from '@/components';
 import { SLIDE_HEIGHT, SLIDE_WIDTH } from '@/constants';
 import './slider.css';
-import Image from '../Image';
 
 interface SliderProps {
-  data: Movie[];
+  data: Movie[] | Serie[];
   isLarge: boolean | undefined;
   slug: string;
   isTopTen: boolean | undefined;
   handleDetailModal?: (index: number) => void;
+  category: 'movieApi' | 'serieApi';
 }
 
 const Slider = (props: SliderProps) => {
-  const { data, isLarge, slug, isTopTen, handleDetailModal } = props
+  const { category, data, isLarge, slug, isTopTen, handleDetailModal } = props
   let timer: NodeJS.Timeout;
 
   const [isPrevVisible, setPrevVisible] = useState(false)
@@ -136,13 +136,13 @@ const Slider = (props: SliderProps) => {
         <ArrowForwardIosRoundedIcon />
       </Button>
 
-      {dataToRender.map((movie, index) => {
+      {dataToRender.map((data, index) => {
         const isActive = hover === index;
         const lastInTopTen = index === 9
         return (
           <div
-            key={`${movie.id}-${slug}`}
-            onClick={() => handleClick(index, movie.id)}
+            key={`${data.id}-${slug}`}
+            onClick={() => handleClick(index, data.id)}
             onMouseEnter={() => {handleHover(index)}} 
             onMouseLeave={dismissHover}
             style={{
@@ -212,15 +212,16 @@ const Slider = (props: SliderProps) => {
               </Typography>
             )}
             <Image
-              src={getImgUrl(isLarge || isTopTen ? movie.poster_path : movie.backdrop_path, 'w500')} 
-              alt={movie.title} 
+              src={getImgUrl(isLarge || isTopTen ? data.poster_path : data.backdrop_path, 'w500')} 
+              alt={(data as Movie).title || (data as Serie).name} 
               style={{
                 objectFit: 'contain',
                 width: isTopTen ? '50%' : '100%',
               }}
             />
             <PreviewCard 
-              movie={movie}
+              category={category}
+              data={data}
               isActive={isActive}
               handleMoreInfo={handleDetailModal}
             />

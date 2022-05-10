@@ -9,11 +9,12 @@ const Home = () => {
   const { data: topRatedMoviesData, isLoading: isLoadingTopRatedMovies } = useGetTopRatedMoviesQuery(null)
 
   const {
-    backdrop_path,
-    overview,
-    poster_path,
-    title,
-  } = popularMoviesData?.results[0] || { overview: '', title: '', poster_path: '' }
+    id = 0,
+    backdrop_path = '',
+    overview = '',
+    poster_path = '',
+    title = '',
+  } = popularMoviesData?.results[0] || { }
 
   return (
     <Container
@@ -21,25 +22,31 @@ const Home = () => {
       maxWidth={false}
     >
       <Billboard 
+        category="movieApi"
+        id={id}
         title={title}
         image={backdrop_path ?? poster_path}
         overview={overview}
       />
       {popularMoviesData && <DataRow
+        category="movieApi"
         data={popularMoviesData}
         title="Popular on Netflix"
       />}
       {popularMoviesData && <DataRow
         data={popularMoviesData}
+        category="movieApi"
         title="Popular on Netflix"
         isTopTen={true}
       />}
       {topRatedMoviesData && <DataRow
+        category="movieApi"
         data={topRatedMoviesData}
         title="Lastest Movies"
         isLarge={true}
       />}
       {topRatedMoviesData && <DataRow
+        category="movieApi"
         data={topRatedMoviesData}
         title="Lastest Movies"
         isLarge={true}

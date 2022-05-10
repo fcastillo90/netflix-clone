@@ -1,4 +1,4 @@
-import { GenreList, MovieDetail, MovieList } from '@/types'
+import { GenreList, MovieDetail, MovieList, GetVideos } from '@/types'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import prepareHeaders from '../apiPrepareHeaders'
 
@@ -19,6 +19,9 @@ export const movieApi = createApi({
     getMovieDetail: builder.query<MovieDetail, number>({
       query: (id) => `/movie/${id}`,
     }),
+    getMovieVideos: builder.query<GetVideos, number>({
+      query: (id) => `/movie/${id}/videos`,
+    }),
     getLastestMovies: builder.query<MovieDetail, null>({
       query: () => `/movie/latest`,
     }),
@@ -36,4 +39,5 @@ export const {
   useGetMovieDetailQuery,
   useGetLastestMoviesQuery,
   useGetTopRatedMoviesQuery,
+  useGetMovieVideosQuery
 } = movieApi

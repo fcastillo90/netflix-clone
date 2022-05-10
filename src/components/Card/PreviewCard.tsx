@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Typography from '@mui/material/Typography';
-import { Genre, Movie } from '@/types';
+import { Genre, Movie, Serie } from '@/types';
 import CircleRoundedIcon from '@mui/icons-material/CircleRounded';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
@@ -8,19 +8,20 @@ import theme from '@/styles';
 import ButtonGroup from '../Button/ButtonGroup';
 
 interface PreviewCardProps {
-  movie: Movie;
+  data: Movie | Serie;
+  category: 'movieApi' | 'serieApi';
   isActive: boolean;
   handleMoreInfo?: (movieId: number) => void;
 }
 
 const PreviewCard = (props: PreviewCardProps) => {
-  const { movie, isActive, handleMoreInfo } = props;
+  const { category, data, isActive, handleMoreInfo } = props;
 
-  const movieApi: any = useSelector((state: RootState) => state.movieApi?.queries['getGenreList(null)']?.data);
+  const dataApi: any = useSelector((state: RootState) => state[category]?.queries['getGenreList(null)']?.data);
 
   const getGenres = (genresIds: number[]) =>
     genresIds.map((id) => 
-      movieApi?.genres.find((genre: Genre) => genre.id === id))
+      dataApi?.genres.find((genre: Genre) => genre.id === id))
 
   return (
       
@@ -30,7 +31,7 @@ const PreviewCard = (props: PreviewCardProps) => {
     }}>
       <ButtonGroup
         handleMoreInfo={handleMoreInfo}
-        movie={movie}
+        movie={data}
       />
       <div>
         <Typography color="lightgreen" style={{marginTop:16, fontWeight: 700}}>
@@ -39,10 +40,10 @@ const PreviewCard = (props: PreviewCardProps) => {
       </div>
 
       {isActive && <Typography variant="body2" color="text">
-        {getGenres(movie.genre_ids).map((genre, index) => {
+        {getGenres(data.genre_ids).map((genre, index) => {
           return <React.Fragment key={genre.id}>
             {genre?.name}
-            {index !== movie.genre_ids.length - 1 && <CircleRoundedIcon 
+            {index !== data.genre_ids.length - 1 && <CircleRoundedIcon 
               style={{
                 fontSize: 6,
                 marginLeft: 6,

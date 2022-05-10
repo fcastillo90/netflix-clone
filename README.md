@@ -11,19 +11,19 @@ It contains:
 - [X] Vite
 - [X] pnpm
 - [X] Redux toolkit + query
+- [X] Data cache
 - [X] React Portal
 - [X] Lazy image fetching (IntersectionObserver)
 - [X] React router
 - [X] MUI
 - [X] dotenv files
 - [X] custom hooks
+- [X] path aliases
 
 Work pending:
 
 - [ ] testing
 - [ ] better responsive
-- [ ] Movie/Series detail page
-- [ ] Video playback
 - [ ] Improve memoization
 
 ## STEPS TO RUN

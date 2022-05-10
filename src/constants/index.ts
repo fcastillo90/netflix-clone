@@ -6,11 +6,11 @@ export const NAV_BAR_PAGES = [
     label: 'Home',
   },
   {
-    path: '/browse/genre/83',
+    path: '/browse/tv',
     label: 'TV Shows'
   },
   {
-    path: '/browse/genre/34399',
+    path: '/browse/movie',
     label: 'Movies'
   },
   {

@@ -1,43 +1,37 @@
-import { useEffect } from 'react';
+import { useRef, useState, useEffect } from "react"
 
-let listenerCallbacks = new WeakMap();
+const useIntersection = <T extends HTMLElement>(options: IntersectionObserverInit): [React.RefObject<T>, boolean, boolean] => {
+  const containerRef = useRef<T>(null)
+  const [ isVisible, setIsVisible ] = useState(false)
+  const [ isTabFocus, setIsTabFocus ] = useState(true)
 
-let observer: IntersectionObserver;
-
-function handleIntersections(entries: any) {
-  entries.forEach((entry: any) => {
-    if (listenerCallbacks.has(entry.target)) {
-      let cb = listenerCallbacks.get(entry.target);
-
-      if (entry.isIntersecting || entry.intersectionRatio > 0) {
-        observer.unobserve(entry.target);
-        listenerCallbacks.delete(entry.target);
-        cb();
-      }
-    }
-  });
-}
-
-function getIntersectionObserver() {
-  if (observer === undefined) {
-    observer = new IntersectionObserver(handleIntersections, {
-      rootMargin: '100px',
-      threshold: 0.15
-    });
+  const callbackFunction: IntersectionObserverCallback = (entries) => {
+    const [ entry ] = entries
+    setIsVisible(entry.isIntersecting)
   }
-  return observer;
-}
 
-export function useIntersection(elem: React.MutableRefObject<HTMLDivElement>, callback: () => void) {
+  const onFocus = () => setIsTabFocus(true)
+  const onBlur = () => setIsTabFocus(false)
+
   useEffect(() => {
-    let target = elem.current;
-    let observer = getIntersectionObserver();
-    listenerCallbacks.set(target, callback);
-    observer.observe(target);
-
+    const observer = new IntersectionObserver(callbackFunction, options)
+    if (containerRef.current) observer.observe(containerRef.current)
+    
     return () => {
-      listenerCallbacks.delete(target);
-      observer.unobserve(target);
+      if(containerRef.current) observer.unobserve(containerRef.current)
+    }
+  }, [containerRef, options])
+
+  useEffect(() => {
+    window.addEventListener("focus", onFocus);
+    window.addEventListener("blur", onBlur);
+    return () => {
+        window.removeEventListener("focus", onFocus);
+        window.removeEventListener("blur", onBlur);
     };
-  }, []);
+}, []);
+
+  return [containerRef, isVisible, isTabFocus]
 }
+
+export default useIntersection

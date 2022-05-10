@@ -1,4 +1,4 @@
-import { GenreList, SerieDetail, SerieList } from '@/types'
+import { GenreList, SerieDetail, SerieList, GetVideos } from '@/types'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import prepareHeaders from '../apiPrepareHeaders'
 
@@ -19,6 +19,9 @@ export const serieApi = createApi({
     getPopularSerie: builder.query<SerieList, null>({
       query: () => `/tv/popular`,
     }),
+    getSerieVideos: builder.query<GetVideos, number>({
+      query: (id) => `/tv/${id}/videos`,
+    }),
   }),
 })
 
@@ -27,5 +30,6 @@ export const serieApi = createApi({
 export const { 
   useGetGenreListQuery,
   useGetSerieDetailQuery,
-  useGetPopularSerieQuery
+  useGetPopularSerieQuery,
+  useGetSerieVideosQuery
 } = serieApi

@@ -5,10 +5,10 @@ import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import theme from '@/styles';
-import { Movie } from '@/types';
+import { Movie, Serie } from '@/types';
 
 interface ButtonGroupProps {
-  movie?: Movie;
+  movie?: Movie | Serie;
   isLarge?: boolean;
   handleMoreInfo?: (movieId: number) => void;
 }

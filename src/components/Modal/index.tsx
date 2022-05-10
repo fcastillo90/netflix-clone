@@ -4,16 +4,22 @@ import { getImgUrl } from "@/utils/getUrl";
 import { Card, CardContent, CardMedia, CircularProgress, Fab, Grid, Modal, Slide, Typography } from "@mui/material";
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import {ButtonGroup, GradientBottom} from "@/components";
+import { useGetSerieDetailQuery } from "@/store/services/ApiSerieSlice";
+import { MovieDetail, SerieDetail } from "@/types";
 
 interface ModalProps {
+  category: 'movieApi' | 'serieApi';
   isOpen: number | false;
   handleClose: () => void;
 }
 
 const ModalComponent = (props: ModalProps) => {
-  const { isOpen, handleClose } = props
+  const { category, isOpen, handleClose } = props
 
-  const { data, isLoading } = useGetMovieDetailQuery(isOpen as number)
+    const { data, isLoading } = category === 'movieApi' ? 
+    useGetMovieDetailQuery(isOpen as number) 
+    : 
+    useGetSerieDetailQuery(isOpen as number)
   
   const modalWidth = 850
 
@@ -51,8 +57,8 @@ const ModalComponent = (props: ModalProps) => {
               <CardMedia
                 component="img"
                 height="478"
-                image={getImgUrl(data?.backdrop_path || ' ', 'original')}
-                alt={data?.title}
+                image={getImgUrl((data as MovieDetail | SerieDetail)?.backdrop_path ?? ' ', 'original')}
+                alt={(data as MovieDetail)?.title ?? (data as SerieDetail)?.name ?? ' '}
               />
               <Fab 
                 size="small" 
@@ -87,7 +93,7 @@ const ModalComponent = (props: ModalProps) => {
                     marginBottom: 24
                   }}
                 >
-                  {data?.title}
+                  {(data as MovieDetail)?.title ?? (data as SerieDetail)?.name}
                 </Typography>
                 <ButtonGroup 
                   isLarge={true}
@@ -98,7 +104,7 @@ const ModalComponent = (props: ModalProps) => {
               <Grid container>
                 <Grid item xs={12}>
                   <Typography gutterBottom variant="h5" component="h2">
-                    {data?.title}
+                    {(data as MovieDetail)?.title ?? (data as SerieDetail)?.name}
                   </Typography>
                   <Typography variant="body2" component="p">
                     {data?.overview}
