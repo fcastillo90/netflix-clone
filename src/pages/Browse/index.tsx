@@ -3,7 +3,7 @@ import { useGetPopularMoviesQuery, useGetTopRatedMoviesQuery } from "@/store/ser
 import { Billboard, YoutubeEmbed } from "@/components";
 import DataRow from "@/components/DataRow";
 import useVideoHook from "@/hooks/useVideoHook";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 const Home = () => {
 
@@ -25,6 +25,9 @@ const Home = () => {
     title = '',
   } = popularMoviesData?.results[0] || { }
 
+  useEffect(() => {
+    handlePlay()
+  }, [])
   return (
     <Container
       disableGutters

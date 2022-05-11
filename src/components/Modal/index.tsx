@@ -54,12 +54,6 @@ const ModalComponent = (props: ModalProps) => {
           <>
             <div style={{position: 'relative'}}>
               <GradientBottom />
-              <CardMedia
-                component="img"
-                height="478"
-                image={getImgUrl((data as MovieDetail | SerieDetail)?.backdrop_path ?? ' ', 'original')}
-                alt={(data as MovieDetail)?.title ?? (data as SerieDetail)?.name ?? ' '}
-              />
               <Fab 
                 size="small" 
                 color="secondary" 
@@ -73,6 +67,12 @@ const ModalComponent = (props: ModalProps) => {
               >
                 <CloseRoundedIcon />
               </Fab>
+              <CardMedia
+                component="img"
+                height="478"
+                image={getImgUrl((data as MovieDetail | SerieDetail)?.backdrop_path ?? ' ', 'original')}
+                alt={(data as MovieDetail)?.title ?? (data as SerieDetail)?.name}
+              />
               <div
                 style={{
                   position: 'absolute',

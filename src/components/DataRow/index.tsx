@@ -10,7 +10,7 @@ interface DataRowProps {
   title: string;
   isLarge?: boolean;
   isTopTen?: boolean;
-  billboardActions?: {playVideo: () => void, pauseVideo: () => void};
+  billboardActions?: {playVideo: (isPlaying: boolean) => void, pauseVideo: (isPlaying: boolean) => void};
 }
 
 const typographyStyle = {
@@ -26,11 +26,11 @@ const DataRow = (props: DataRowProps) => {
   const [isOpen, setIsOpen] = useState<number | false>(false)
 
   const handleOpen = (index: number) => {
-    if (billboardActions) billboardActions.pauseVideo()
+    if (billboardActions) billboardActions.pauseVideo(true)
     setIsOpen(index)
   }
   const handleClose = () => {
-    if (billboardActions) billboardActions.playVideo()
+    if (billboardActions) billboardActions.playVideo(false)
     setIsOpen(false)
   }
   return (

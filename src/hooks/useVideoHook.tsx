@@ -1,8 +1,9 @@
-import { MutableRefObject, useEffect, useRef } from "react";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
 import useIntersection from "./useIntersection";
 
 const useVideoHook = (): [MutableRefObject<any>, MutableRefObject<any>, () => void, () => void] => {
   let playerRef = useRef<any>(null);
+  const [isOtherPlaying, setIsOtherPlaying] = useState(false);
 
   const [ containerRef, isOnViewport, isCurrentTabFocus ] = useIntersection<HTMLDivElement>({
     root: null,
@@ -10,22 +11,32 @@ const useVideoHook = (): [MutableRefObject<any>, MutableRefObject<any>, () => vo
     threshold:0
   })
 
-  const handlePlay = () => {
-    if (playerRef?.current && isOnViewport) playerRef.current.playVideo()
+  const onPlay = () => {
+    console.log(playerRef.current)
+    if (playerRef?.current && isOnViewport && !isOtherPlaying){ 
+      playerRef.current.playVideo()
+    }
   }
-  const handlePause = () => {
+  const onPause = () => {
     if (playerRef?.current) playerRef.current.pauseVideo()
   }
 
+  const handlePlay = (otherVideoPlaying: boolean=false) => {
+    setIsOtherPlaying(otherVideoPlaying)
+    onPlay()
+  }
+  const handlePause = (otherVideoPlaying: boolean=false) => {
+    setIsOtherPlaying(otherVideoPlaying)
+    onPause()
+  }
+
   useEffect(() => {
-    if(playerRef.current) {
-      if (isOnViewport && isCurrentTabFocus) {
-        handlePlay();
-      } else {
-        handlePause();
-      }
+    if (isOnViewport && isCurrentTabFocus && !isOtherPlaying) {
+      onPlay();
+    } else {
+      onPause();
     }
-  }, [isOnViewport, isCurrentTabFocus, playerRef.current])
+  }, [isOnViewport, isCurrentTabFocus, isOtherPlaying])
 
   return [playerRef, containerRef, handlePlay, handlePause]
 }

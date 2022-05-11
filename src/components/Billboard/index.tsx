@@ -23,7 +23,10 @@ const Billboard = (props: BillboardProps) => {
   const isViewMdUp = useMediaQuery(theme.breakpoints.up('md'));
   
   const { width } = useWindowDimensions()
-  const { data } =  children && category === 'movieApi' ? useGetMovieVideosQuery(id) : useGetSerieVideosQuery(id)
+  const { data } =  children && category === 'movieApi' ? 
+    useGetMovieVideosQuery(id) 
+    : 
+    useGetSerieVideosQuery(id)
   const height = isViewMdUp ? width*0.5625 : width*0.4
   return (
     <>

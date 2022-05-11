@@ -1,4 +1,3 @@
-import useIntersection from "@/hooks/useIntersection";
 import { forwardRef, MutableRefObject, useEffect, useRef, useState } from "react";
 import YouTube from "react-youtube";
 
@@ -11,7 +10,6 @@ interface YoutubeEmbedProps {
 const YoutubeEmbed = forwardRef((props: YoutubeEmbedProps, ref) => {
   const { id, width, height } = props
   const [isVisible, setIsVisible] = useState(false);
-
   return (
       <YouTube
         videoId={id}
@@ -29,18 +27,21 @@ const YoutubeEmbed = forwardRef((props: YoutubeEmbedProps, ref) => {
             showinfo: 0,
             rel: 0,
             modestbranding: 1,
-            origin: window.location.origin
-          }
+            enablejsapi: 1
+          },
         }}
         onReady={(e) => {
-          if(ref) (ref as MutableRefObject<any>).current = e.target;
-          e.target.playVideo()
+          e.target.playVideo();
+          if (ref) (ref as MutableRefObject<any>).current = e.target;
         }}
         onPlay={() => {
           setIsVisible(true)
         }}
         onEnd={() => { 
           setIsVisible(false) 
+        }}
+        onError={() => {
+          console.log('error')
         }}
       />
   )
