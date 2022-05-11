@@ -1,8 +1,14 @@
 import { MutableRefObject, useEffect, useRef } from "react";
 import useIntersection from "./useIntersection";
 
-const useVideoHook = ({isOnViewport}: {isOnViewport: boolean}): [MutableRefObject<any>, () => void, () => void] => {
+const useVideoHook = (): [MutableRefObject<any>, MutableRefObject<any>, () => void, () => void] => {
   let playerRef = useRef<any>(null);
+
+  const [ containerRef, isOnViewport, isCurrentTabFocus ] = useIntersection<HTMLDivElement>({
+    root: null,
+    rootMargin: "0px",
+    threshold:0
+  })
 
   const handlePlay = () => {
     if (playerRef?.current && isOnViewport) playerRef.current.playVideo()
@@ -13,15 +19,15 @@ const useVideoHook = ({isOnViewport}: {isOnViewport: boolean}): [MutableRefObjec
 
   useEffect(() => {
     if(playerRef.current) {
-      if (isOnViewport) {
+      if (isOnViewport && isCurrentTabFocus) {
         handlePlay();
       } else {
         handlePause();
       }
     }
-  }, [isOnViewport, playerRef.current])
+  }, [isOnViewport, isCurrentTabFocus, playerRef.current])
 
-  return [playerRef, handlePlay, handlePause]
+  return [playerRef, containerRef, handlePlay, handlePause]
 }
 
 export default useVideoHook

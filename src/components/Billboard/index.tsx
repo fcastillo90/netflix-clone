@@ -24,7 +24,7 @@ const Billboard = (props: BillboardProps) => {
   
   const { width } = useWindowDimensions()
   const { data } =  children && category === 'movieApi' ? useGetMovieVideosQuery(id) : useGetSerieVideosQuery(id)
-  const playerHeight = isViewMdUp ? width*0.5625 : width*0.4
+  const height = isViewMdUp ? width*0.5625 : width*0.4
   return (
     <>
       <div style={{
@@ -35,13 +35,15 @@ const Billboard = (props: BillboardProps) => {
         height: isViewMdUp ?  "56.25vw": "40vw"
       }}>
         <GradientBottom />
-        {children && data?.results && children(
-          {
-            key: data?.results[0]?.key, 
-            width, 
-            height: playerHeight
-          }
-        )}
+        {children && data?.results && <div style={{marginTop: -60}}>
+          {children(
+            {
+              key: data?.results[0]?.key, 
+              width, 
+              height: height + 120
+            }
+          )}
+        </div>}
         <img
           src={getImgUrl(image, 'original')}
           alt={title}
@@ -90,7 +92,7 @@ const Billboard = (props: BillboardProps) => {
                 }}
               />
               <h3 style={{color: "rgba(255,255,255,0.7"}}>
-                FILM
+                {category === 'movieApi' ? 'FILM' : 'SERIE'}
               </h3>
             </div>
             <h1 style={{ margin: 0, textAlign: 'center', fontSize: '2.8rem' }}>{title}</h1>

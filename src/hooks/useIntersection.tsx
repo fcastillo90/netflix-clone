@@ -30,7 +30,6 @@ const useIntersection = <T extends HTMLElement>(options: IntersectionObserverIni
         window.removeEventListener("blur", onBlur);
     };
 }, []);
-
   return [containerRef, isVisible, isTabFocus]
 }
 

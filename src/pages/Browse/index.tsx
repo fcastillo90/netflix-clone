@@ -3,17 +3,11 @@ import { useGetPopularMoviesQuery, useGetTopRatedMoviesQuery } from "@/store/ser
 import { Billboard, YoutubeEmbed } from "@/components";
 import DataRow from "@/components/DataRow";
 import useVideoHook from "@/hooks/useVideoHook";
-import useIntersection from "@/hooks/useIntersection";
 import { useMemo } from "react";
 
 const Home = () => {
-  const [ containerRef, isOnViewport, isCurrentTabFocus ] = useIntersection<HTMLDivElement>({
-    root: null,
-    rootMargin: "0px",
-    threshold:0
-  })
 
-  const [playerRef, handlePlay, handlePause] = useVideoHook({isOnViewport: isOnViewport && isCurrentTabFocus});
+  const [playerRef, containerRef, handlePlay, handlePause] = useVideoHook();
 
   const { data: popularMoviesData, isLoading: isLoadingPopularMovies } = useGetPopularMoviesQuery(null)
   const { data: topRatedMoviesData, isLoading: isLoadingTopRatedMovies } = useGetTopRatedMoviesQuery(null)
