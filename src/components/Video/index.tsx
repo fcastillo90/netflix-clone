@@ -1,5 +1,5 @@
 import useIntersection from "@/hooks/useIntersection";
-import { useEffect, useRef, useState } from "react";
+import { forwardRef, MutableRefObject, useEffect, useRef, useState } from "react";
 import YouTube from "react-youtube";
 
 interface YoutubeEmbedProps {
@@ -8,29 +8,11 @@ interface YoutubeEmbedProps {
   height: string | number;
 }
 
-const YoutubeEmbed = ({ id, width, height }: YoutubeEmbedProps) => {
+const YoutubeEmbed = forwardRef((props: YoutubeEmbedProps, ref) => {
+  const { id, width, height } = props
   const [isVisible, setIsVisible] = useState(false);
-  let playerRef = useRef<any>(null);
-
-  const [ containerRef, isOnViewport, isTabFocus ] = useIntersection<HTMLDivElement>({
-    root: null,
-    rootMargin: "0px",
-    threshold:0
-  })
-
-  useEffect(() => {
-    if(playerRef.current) {
-      if (isOnViewport && isTabFocus) {
-        playerRef.current.playVideo();
-      } else {
-        playerRef.current.pauseVideo();
-      }
-    }
-  }, [isOnViewport, isTabFocus, playerRef.current])
-
 
   return (
-    <div ref={containerRef}>
       <YouTube
         videoId={id}
         id={id}
@@ -51,8 +33,8 @@ const YoutubeEmbed = ({ id, width, height }: YoutubeEmbedProps) => {
           }
         }}
         onReady={(e) => {
-          playerRef.current = e.target 
-          setIsVisible(true)
+          if(ref) (ref as MutableRefObject<any>).current = e.target;
+          e.target.playVideo()
         }}
         onPlay={() => {
           setIsVisible(true)
@@ -61,8 +43,7 @@ const YoutubeEmbed = ({ id, width, height }: YoutubeEmbedProps) => {
           setIsVisible(false) 
         }}
       />
-    </div>
   )
-};
+});
 
 export default YoutubeEmbed;

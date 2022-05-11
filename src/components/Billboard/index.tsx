@@ -14,14 +14,17 @@ interface BillboardProps {
   title: string;
   image: string;
   overview: string;
+  children?: ({key, width, height}: {key: string, width: string | number, height: string | number}) => JSX.Element;
 }
 
-const Billboard = ({category, id, title, image, overview}: BillboardProps) => {
+const Billboard = (props: BillboardProps) => {
+  const {category, id, title, image, overview, children} = props;
   const theme = useTheme();
   const isViewMdUp = useMediaQuery(theme.breakpoints.up('md'));
   
   const { width } = useWindowDimensions()
-  const { data } =  category === 'movieApi' ? useGetMovieVideosQuery(id) : useGetSerieVideosQuery(id)
+  const { data } =  children && category === 'movieApi' ? useGetMovieVideosQuery(id) : useGetSerieVideosQuery(id)
+  const playerHeight = isViewMdUp ? width*0.5625 : width*0.4
   return (
     <>
       <div style={{
@@ -32,11 +35,13 @@ const Billboard = ({category, id, title, image, overview}: BillboardProps) => {
         height: isViewMdUp ?  "56.25vw": "40vw"
       }}>
         <GradientBottom />
-        {data?.results[0]?.key && <YoutubeEmbed 
-          id={data?.results[0]?.key} 
-          width='100%'
-          height={isViewMdUp ? width*0.5625 : width*0.4}
-        />}
+        {children && data?.results && children(
+          {
+            key: data?.results[0]?.key, 
+            width, 
+            height: playerHeight
+          }
+        )}
         <img
           src={getImgUrl(image, 'original')}
           alt={title}

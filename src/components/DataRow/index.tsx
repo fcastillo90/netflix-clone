@@ -2,7 +2,7 @@ import {  Typography } from "@mui/material"
 import { MovieList, SerieList } from "@/types";
 import { Slider, Modal } from "@/components"
 import { getSlug } from "@/utils/getSlug";
-import { useState } from "react";
+import { memo, useState } from "react";
 
 interface DataRowProps {
   category: 'movieApi' | 'serieApi';
@@ -10,6 +10,7 @@ interface DataRowProps {
   title: string;
   isLarge?: boolean;
   isTopTen?: boolean;
+  billboardActions?: {playVideo: () => void, pauseVideo: () => void};
 }
 
 const typographyStyle = {
@@ -21,16 +22,17 @@ const typographyStyle = {
 }
 
 const DataRow = (props: DataRowProps) => {
-  const {category, data, title, isLarge, isTopTen} = props
+  const {billboardActions, category, data, title, isLarge, isTopTen} = props
   const [isOpen, setIsOpen] = useState<number | false>(false)
 
   const handleOpen = (index: number) => {
+    if (billboardActions) billboardActions.pauseVideo()
     setIsOpen(index)
   }
   const handleClose = () => {
+    if (billboardActions) billboardActions.playVideo()
     setIsOpen(false)
   }
-
   return (
     <>
       <div
@@ -64,4 +66,4 @@ const DataRow = (props: DataRowProps) => {
   )
 }
 
-export default DataRow
+export default memo(DataRow)
