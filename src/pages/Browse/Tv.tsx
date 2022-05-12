@@ -1,6 +1,5 @@
 import { Billboard, DataRow, Modal } from "@/components";
 import { useGetPopularSerieQuery } from "@/store/services/ApiSerieSlice";
-import { Container } from "@mui/material";
 
 const BrowseTv = () => {
 
@@ -16,10 +15,7 @@ const BrowseTv = () => {
 
 
   return (
-    <Container
-      disableGutters
-      maxWidth={false}
-    >
+    <>
       <Billboard 
         category="serieApi"
         id={id}
@@ -33,7 +29,7 @@ const BrowseTv = () => {
         title="Popular on Netflix"
       />}
       <Modal />
-    </Container>
+    </>
   )
 }
 

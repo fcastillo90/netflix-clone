@@ -1,7 +1,5 @@
-import { Container } from "@mui/material"
+import { Billboard, Modal, DataRow } from "@/components";
 import { useGetPopularMoviesQuery, useGetTopRatedMoviesQuery } from "@/store/services/ApiMovieSlice";
-import { Billboard, Modal } from "@/components";
-import DataRow from "@/components/DataRow";
 
 const Home = () => {
   const { data: popularMoviesData, isLoading: isLoadingPopularMovies } = useGetPopularMoviesQuery(null)
@@ -16,10 +14,7 @@ const Home = () => {
   } = popularMoviesData?.results[0] || { }
 
   return (
-    <Container
-      disableGutters
-      maxWidth={false}
-    >
+    <>
       <Billboard 
         category="movieApi"
         id={id}
@@ -53,7 +48,7 @@ const Home = () => {
       />}
 
       <Modal />
-    </Container>
+    </>
   )
 }
 
