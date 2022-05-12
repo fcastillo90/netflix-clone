@@ -1,21 +1,23 @@
 import { Container } from "@mui/material"
 import { useGetPopularMoviesQuery, useGetTopRatedMoviesQuery } from "@/store/services/ApiMovieSlice";
-import { Billboard, YoutubeEmbed } from "@/components";
+import { Billboard, YoutubeEmbed, Modal } from "@/components";
 import DataRow from "@/components/DataRow";
 import useVideoHook from "@/hooks/useVideoHook";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 const Home = () => {
+  const isOpen = useSelector((state: RootState) => state.modal.isOpen)
 
   const [playerRef, containerRef, handlePlay, handlePause] = useVideoHook();
 
   const { data: popularMoviesData, isLoading: isLoadingPopularMovies } = useGetPopularMoviesQuery(null)
   const { data: topRatedMoviesData, isLoading: isLoadingTopRatedMovies } = useGetTopRatedMoviesQuery(null)
 
-  const billboardActions = useMemo(() => ({
-    playVideo: handlePlay,
-    pauseVideo: handlePause
-  }), [])
+  const onModalClose = () => {
+    handlePlay(false)
+  }
 
   const {
     id = 0,
@@ -26,8 +28,9 @@ const Home = () => {
   } = popularMoviesData?.results[0] || { }
 
   useEffect(() => {
-    handlePlay()
-  }, [])
+    if (isOpen) handlePause(true)
+  }, [isOpen])
+
   return (
     <Container
       disableGutters
@@ -41,11 +44,12 @@ const Home = () => {
           image={backdrop_path ?? poster_path}
           overview={overview}
         >
-          {({key, width, height}) => (
+          {({key, width, height, margin}) => (
             <YoutubeEmbed 
               id={key} 
               width={width}
               height={height}
+              margin={margin}
               ref={playerRef}
             />
           )}
@@ -55,21 +59,18 @@ const Home = () => {
         title="Popular on Netflix"
         category="movieApi"
         data={popularMoviesData}
-        billboardActions={billboardActions}
       />}
       {popularMoviesData && <DataRow
         title="Popular on Netflix"
         category="movieApi"
         data={popularMoviesData}
         isTopTen={true}
-        billboardActions={billboardActions}
       />}
       {topRatedMoviesData && <DataRow
         title="Lastest Movies"
         category="movieApi"
         data={topRatedMoviesData}
         isLarge={true}
-        billboardActions={billboardActions}
       />}
       {topRatedMoviesData && <DataRow
         title="Lastest Movies"
@@ -77,8 +78,11 @@ const Home = () => {
         data={topRatedMoviesData}
         isLarge={true}
         isTopTen={true}
-        billboardActions={billboardActions}
       />}
+
+      <Modal
+        onClose={onModalClose}
+      />
     </Container>
   )
 }

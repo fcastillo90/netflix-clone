@@ -1,7 +1,7 @@
 import { MutableRefObject, useEffect, useRef, useState } from "react";
 import useIntersection from "./useIntersection";
 
-const useVideoHook = (): [MutableRefObject<any>, MutableRefObject<any>, () => void, () => void] => {
+const useVideoHook = (): [MutableRefObject<any>, MutableRefObject<any>, (otherPlaying?: boolean) => void, (otherPlaying?: boolean) => void] => {
   let playerRef = useRef<any>(null);
   const [isOtherPlaying, setIsOtherPlaying] = useState(false);
 
@@ -12,7 +12,6 @@ const useVideoHook = (): [MutableRefObject<any>, MutableRefObject<any>, () => vo
   })
 
   const onPlay = () => {
-    console.log(playerRef.current)
     if (playerRef?.current && isOnViewport && !isOtherPlaying){ 
       playerRef.current.playVideo()
     }

@@ -3,6 +3,8 @@ import { MovieList, SerieList } from "@/types";
 import { Slider, Modal } from "@/components"
 import { getSlug } from "@/utils/getSlug";
 import { memo, useState } from "react";
+import { useDispatch } from "react-redux";
+import { openModal } from "@/store/features/modalSlice";
 
 interface DataRowProps {
   category: 'movieApi' | 'serieApi';
@@ -10,7 +12,6 @@ interface DataRowProps {
   title: string;
   isLarge?: boolean;
   isTopTen?: boolean;
-  billboardActions?: {playVideo: (isPlaying: boolean) => void, pauseVideo: (isPlaying: boolean) => void};
 }
 
 const typographyStyle = {
@@ -22,17 +23,16 @@ const typographyStyle = {
 }
 
 const DataRow = (props: DataRowProps) => {
-  const {billboardActions, category, data, title, isLarge, isTopTen} = props
-  const [isOpen, setIsOpen] = useState<number | false>(false)
+  const {category, data, title, isLarge, isTopTen} = props
+  const dispatch = useDispatch()
 
-  const handleOpen = (index: number) => {
-    if (billboardActions) billboardActions.pauseVideo(true)
-    setIsOpen(index)
+  const handleOpenModal = (id: number) => {
+    dispatch(openModal({
+      id,
+      category
+    }))
   }
-  const handleClose = () => {
-    if (billboardActions) billboardActions.playVideo(false)
-    setIsOpen(false)
-  }
+
   return (
     <>
       <div
@@ -54,14 +54,9 @@ const DataRow = (props: DataRowProps) => {
           data={data.results}
           isLarge={isLarge}
           isTopTen={isTopTen}
-          handleDetailModal={handleOpen}
+          handleDetailModal={handleOpenModal}
         />
       </div>
-      <Modal
-        category={category}
-        isOpen={isOpen}
-        handleClose={handleClose}
-      />
     </>
   )
 }

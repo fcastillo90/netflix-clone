@@ -5,18 +5,22 @@ interface YoutubeEmbedProps {
   id: string;
   width: string | number;
   height: string | number;
+  margin?: string | number;
 }
 
 const YoutubeEmbed = forwardRef((props: YoutubeEmbedProps, ref) => {
-  const { id, width, height } = props
+  const { id, width, height, margin=0 } = props
   const [isVisible, setIsVisible] = useState(false);
+
   return (
+    <div {...(isVisible && {style: {margin: margin}})}>
       <YouTube
         videoId={id}
         id={id}
         style={{
           transition: 'all 0.5s',
-          display: isVisible ? 'block' : 'none'
+          display: isVisible ? 'block' : 'none',
+          zIndex: 4
         }}
         opts={{
           width, 
@@ -44,6 +48,7 @@ const YoutubeEmbed = forwardRef((props: YoutubeEmbedProps, ref) => {
           console.log('error')
         }}
       />
+    </div>
   )
 });
 

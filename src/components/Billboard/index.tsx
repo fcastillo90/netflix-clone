@@ -14,7 +14,7 @@ interface BillboardProps {
   title: string;
   image: string;
   overview: string;
-  children?: ({key, width, height}: {key: string, width: string | number, height: string | number}) => JSX.Element;
+  children?: ({key, width, height, margin}: {key: string, width: string | number, height: string | number, margin: string | number}) => JSX.Element;
 }
 
 const Billboard = (props: BillboardProps) => {
@@ -38,15 +38,16 @@ const Billboard = (props: BillboardProps) => {
         height: isViewMdUp ?  "56.25vw": "40vw"
       }}>
         <GradientBottom />
-        {children && data?.results && <div style={{marginTop: -60}}>
-          {children(
+        {children && data?.results && 
+          children(
             {
               key: data?.results[0]?.key, 
               width, 
-              height: height + 120
+              height: height + 120,
+              margin: '-60px 0 0 0'
             }
-          )}
-        </div>}
+          )
+        }
         <img
           src={getImgUrl(image, 'original')}
           alt={title}

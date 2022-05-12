@@ -215,3 +215,5 @@ export interface GetVideos {
   id:      number;
   results: Video[];
 }
+
+export type CategoryProp = 'movieApi' | 'serieApi' | false;

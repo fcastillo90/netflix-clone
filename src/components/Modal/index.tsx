@@ -1,27 +1,42 @@
 import { createPortal } from "react-dom"
-import { useGetMovieDetailQuery } from "@/store/services/ApiMovieSlice";
+import { useGetMovieDetailQuery, useGetMovieVideosQuery } from "@/store/services/ApiMovieSlice";
 import { getImgUrl } from "@/utils/getUrl";
 import { Card, CardContent, CardMedia, CircularProgress, Fab, Grid, Modal, Slide, Typography } from "@mui/material";
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import {ButtonGroup, GradientBottom} from "@/components";
-import { useGetSerieDetailQuery } from "@/store/services/ApiSerieSlice";
-import { MovieDetail, SerieDetail } from "@/types";
+import {ButtonGroup, GradientBottom, YoutubeEmbed} from "@/components";
+import { useGetSerieDetailQuery, useGetSerieVideosQuery } from "@/store/services/ApiSerieSlice";
+import { CategoryProp, MovieDetail, SerieDetail } from "@/types";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/store";
+import { closeModal } from "@/store/features/modalSlice";
 
 interface ModalProps {
-  category: 'movieApi' | 'serieApi';
-  isOpen: number | false;
+  category: CategoryProp;
+  id: number | false;
   handleClose: () => void;
 }
+  
+const modalWidth = 850
+const playerHeight = 478
 
 const ModalComponent = (props: ModalProps) => {
-  const { category, isOpen, handleClose } = props
+  const { id, category, handleClose } = props
 
-    const { data, isLoading } = category === 'movieApi' ? 
-    useGetMovieDetailQuery(isOpen as number) 
+  const { data, isLoading } = id ? 
+    category === 'movieApi' ? 
+      useGetMovieDetailQuery(id) 
+      : 
+      useGetSerieDetailQuery(id)
     : 
-    useGetSerieDetailQuery(isOpen as number)
-  
-  const modalWidth = 850
+    { data: undefined, isLoading: false }
+
+  const { data: videoData } = id ?
+    category === 'movieApi' ? 
+      useGetMovieVideosQuery(id) 
+      : 
+      useGetSerieVideosQuery(id)
+    :
+      { data: undefined }
 
   return (<Modal
     open={true}
@@ -52,7 +67,12 @@ const ModalComponent = (props: ModalProps) => {
           <CircularProgress />
           :
           <>
-            <div style={{position: 'relative'}}>
+            <div 
+              style={{
+                position: 'relative',
+                height: playerHeight
+              }}
+            >
               <GradientBottom />
               <Fab 
                 size="small" 
@@ -67,20 +87,36 @@ const ModalComponent = (props: ModalProps) => {
               >
                 <CloseRoundedIcon />
               </Fab>
-              <CardMedia
-                component="img"
-                height="478"
-                image={getImgUrl((data as MovieDetail | SerieDetail)?.backdrop_path ?? ' ', 'original')}
-                alt={(data as MovieDetail)?.title ?? (data as SerieDetail)?.name}
-              />
               <div
                 style={{
                   position: 'absolute',
-                  top: '40%',
-                  width: '100%',
+                }}
+              >
+                <CardMedia
+                  component="img"
+                  height={playerHeight}
+                  image={getImgUrl((data as MovieDetail | SerieDetail)?.backdrop_path ?? ' ', 'original')}
+                  style={{
+                    position: 'absolute', 
+                    zIndex: -1,
+                    width: modalWidth
+                  }}
+                  alt={(data as MovieDetail)?.title ?? (data as SerieDetail)?.name}
+                />
+                {videoData?.results && <YoutubeEmbed 
+                  id={videoData?.results[0].key} 
+                  width={modalWidth}
+                  height={playerHeight}
+                />}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: playerHeight/2.5,
+                  width: modalWidth,
                   textAlign: 'center',
                   paddingRight: 32,
                   paddingLeft: 32,
+                  zIndex: 9
                 }}
               >
                 <Typography 
@@ -98,6 +134,7 @@ const ModalComponent = (props: ModalProps) => {
                 <ButtonGroup 
                   isLarge={true}
                 />
+                </div>
               </div>
             </div>
             <CardContent>
@@ -120,17 +157,33 @@ const ModalComponent = (props: ModalProps) => {
   </Modal>)
 }
 
-const ModalContainer = (props: ModalProps) => {
-  const { isOpen } = props
+
+interface ModalContainerProps {
+  onClose?: () => void;
+}
+
+const ModalContainer = (props: ModalContainerProps) => {
+  const {onClose} = props
+  const dispatch = useDispatch()
+  const {id, isOpen, category} = useSelector((state: RootState) => state.modal)
+
+  const handleClose = () => {
+    dispatch(closeModal())
+    if (onClose) onClose()
+  }
 
   if (!isOpen) return null
 
   return createPortal(
     <ModalComponent 
-      {...props}
+      handleClose={handleClose}
+      id={id}
+      category={category}
     />,
     document.getElementById('portal') as HTMLElement
   )
 }
 
 export default ModalContainer
+
+// CSP -> to upload platform - chinese stellar platform
