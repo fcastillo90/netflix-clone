@@ -8,7 +8,7 @@ const useVideoHook = (): [MutableRefObject<any>, MutableRefObject<any>, (otherPl
   const [containerRef, isOnViewport, isCurrentTabFocus] = useIntersection<HTMLDivElement>({
     root: null,
     rootMargin: "0px",
-    threshold: 0
+    threshold: 0.3
   })
 
   const onPlay = () => {

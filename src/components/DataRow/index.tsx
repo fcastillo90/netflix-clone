@@ -33,14 +33,17 @@ const DataRow = (props: DataRowProps) => {
     }))
   }
 
+  const getHeight = () => {
+    if (isLarge) return 456
+    if (isTopTen) return 256
+    return 216
+  }
+
   return (
     <>
       <div
         style={{
-          height: isLarge ? 
-            456 
-            : 
-            isTopTen ? 256 : 216
+          height: getHeight()
         }}
       >
         <Typography

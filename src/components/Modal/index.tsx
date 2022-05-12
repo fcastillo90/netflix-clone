@@ -22,21 +22,23 @@ const playerHeight = 478
 const ModalComponent = (props: ModalProps) => {
   const { id, category, handleClose } = props
 
-  const { data, isLoading } = id ?
-    category === CategoryType.MOVIE ?
-      useGetMovieDetailQuery(id)
-      :
-      useGetSerieDetailQuery(id)
-    :
-    { data: undefined, isLoading: false }
+  const getDetailData = () => {
+    if (id) {
+      if (category === CategoryType.MOVIE) return useGetMovieDetailQuery(id)
+      return useGetSerieDetailQuery(id)
+    }
+    return  { data: undefined, isLoading: false }
+  }
+  const getVideoData = () => {
+    if (id) {
+      if (category === CategoryType.MOVIE) return useGetMovieVideosQuery(id)
+      return useGetSerieVideosQuery(id)
+    }
+    return { data: undefined }
+  }
 
-  const { data: videoData } = id ?
-    category === CategoryType.MOVIE ?
-      useGetMovieVideosQuery(id)
-      :
-      useGetSerieVideosQuery(id)
-    :
-    { data: undefined }
+  const { data, isLoading } = getDetailData()
+  const { data: videoData } = getVideoData()
     
   return (<Modal
     open={true}
@@ -173,7 +175,6 @@ const ModalContainer = (props: ModalContainerProps) => {
   const { id, isOpen, category } = useSelector((state: RootState) => state.modal)
 
   const handleClose = () => {
-    console.log("clicked")
     dispatch(closeModal())
     if (onClose) onClose()
   }

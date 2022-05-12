@@ -33,17 +33,19 @@ const Billboard = (props: BillboardProps) => {
   
   const height = isViewMdUp ? width * 0.5625 : width * 0.4
 
-  const { data } = category === CategoryType.MOVIE ?
-    useGetMovieVideosQuery(id)
-    :
-    useGetSerieVideosQuery(id)
-
+  const getData = () => {
+    if (category === CategoryType.MOVIE) return useGetMovieVideosQuery(id)
+    return useGetSerieVideosQuery(id)
+  }
+  
   const handleMoreInfo = () => {
     dispatch(openModal({
       id,
       category,
     }))
   }
+
+  const { data } = getData()
 
   useEffect(() => {
     if (isOpen) handlePause(true)
