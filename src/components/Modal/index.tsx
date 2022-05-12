@@ -37,7 +37,7 @@ const ModalComponent = (props: ModalProps) => {
       useGetSerieVideosQuery(id)
     :
       { data: undefined }
-
+  console.log({videoData})
   return (<Modal
     open={true}
     onClose={handleClose}
@@ -103,11 +103,13 @@ const ModalComponent = (props: ModalProps) => {
                   }}
                   alt={(data as MovieDetail)?.title ?? (data as SerieDetail)?.name}
                 />
-                {videoData?.results && <YoutubeEmbed 
-                  id={videoData?.results[0].key} 
-                  width={modalWidth}
-                  height={playerHeight}
-                />}
+                {videoData?.results && videoData?.results[0] && 
+                  <YoutubeEmbed 
+                    id={videoData?.results[0].key} 
+                    width={modalWidth}
+                    height={playerHeight}
+                  />
+                }
               <div
                 style={{
                   position: 'absolute',

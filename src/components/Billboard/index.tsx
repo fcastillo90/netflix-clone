@@ -50,7 +50,7 @@ const Billboard = (props: BillboardProps) => {
         height: isViewMdUp ?  "56.25vw": "40vw"
       }}>
         <GradientBottom />
-          {data?.results && 
+          {data?.results && data?.results[0] &&
             <div ref={containerRef}>
               <YoutubeEmbed 
                 id={data?.results[0]?.key} 

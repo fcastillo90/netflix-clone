@@ -13,20 +13,21 @@ const BrowseMovie = () => {
   } = popularData?.results[0] || { }
   
   return (
-  <>
-    <Billboard 
-      category="movieApi"
-      id={id}
-      title={title}
-      image={backdrop_path ?? poster_path}
-      overview={overview}
-    />
-    {popularData && <DataRow
-      category="movieApi"
-      data={popularData}
-      title="Popular on Netflix"
-    />}
-  </>)
+    <>
+      <Billboard 
+        category="movieApi"
+        id={id}
+        title={title}
+        image={backdrop_path ?? poster_path}
+        overview={overview}
+      />
+      {popularData && <DataRow
+        category="movieApi"
+        data={popularData}
+        title="Popular on Netflix"
+      />}
+    </>
+  )
 }
 
 export default BrowseMovie
