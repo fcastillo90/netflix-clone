@@ -7,6 +7,10 @@ import { GradientBottom, YoutubeEmbed } from '@/components'
 import { useGetMovieVideosQuery } from "@/store/services/ApiMovieSlice";
 import useWindowDimensions from "@/hooks/useWindowDimensions";
 import { useGetSerieVideosQuery } from "@/store/services/ApiSerieSlice";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
+import useVideoHook from "@/hooks/useVideoHook";
+import { useEffect } from "react";
 
 interface BillboardProps {
   category: 'movieApi' | 'serieApi';
@@ -14,20 +18,28 @@ interface BillboardProps {
   title: string;
   image: string;
   overview: string;
-  children?: ({key, width, height, margin}: {key: string, width: string | number, height: string | number, margin: string | number}) => JSX.Element;
 }
 
 const Billboard = (props: BillboardProps) => {
-  const {category, id, title, image, overview, children} = props;
+  const {category, id, title, image, overview} = props;
+  const isOpen = useSelector((state: RootState) => state.modal.isOpen)
+  const [playerRef, containerRef, handlePlay, handlePause] = useVideoHook();
   const theme = useTheme();
+  const { width } = useWindowDimensions()
   const isViewMdUp = useMediaQuery(theme.breakpoints.up('md'));
   
-  const { width } = useWindowDimensions()
-  const { data } =  children && category === 'movieApi' ? 
+  
+  const { data } =  category === 'movieApi' ? 
     useGetMovieVideosQuery(id) 
     : 
     useGetSerieVideosQuery(id)
   const height = isViewMdUp ? width*0.5625 : width*0.4
+
+  useEffect(() => {
+    if (isOpen) handlePause(true)
+    else handlePlay(false)
+  }, [isOpen])
+
   return (
     <>
       <div style={{
@@ -38,16 +50,17 @@ const Billboard = (props: BillboardProps) => {
         height: isViewMdUp ?  "56.25vw": "40vw"
       }}>
         <GradientBottom />
-        {children && data?.results && 
-          children(
-            {
-              key: data?.results[0]?.key, 
-              width, 
-              height: height + 120,
-              margin: '-60px 0 0 0'
-            }
-          )
-        }
+          {data?.results && 
+            <div ref={containerRef}>
+              <YoutubeEmbed 
+                id={data?.results[0]?.key} 
+                width={width}
+                height={height + 120}
+                margin='-60px 0 0 0'
+                ref={playerRef}
+              />
+            </div>
+          }
         <img
           src={getImgUrl(image, 'original')}
           alt={title}
