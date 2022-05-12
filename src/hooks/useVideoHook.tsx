@@ -5,14 +5,14 @@ const useVideoHook = (): [MutableRefObject<any>, MutableRefObject<any>, (otherPl
   let playerRef = useRef<any>(null);
   const [isOtherPlaying, setIsOtherPlaying] = useState(false);
 
-  const [ containerRef, isOnViewport, isCurrentTabFocus ] = useIntersection<HTMLDivElement>({
+  const [containerRef, isOnViewport, isCurrentTabFocus] = useIntersection<HTMLDivElement>({
     root: null,
     rootMargin: "0px",
-    threshold:0
+    threshold: 0
   })
 
   const onPlay = () => {
-    if (playerRef?.current && isOnViewport && !isOtherPlaying){ 
+    if (playerRef?.current && isOnViewport && !isOtherPlaying) {
       playerRef.current.playVideo()
     }
   }
@@ -20,11 +20,11 @@ const useVideoHook = (): [MutableRefObject<any>, MutableRefObject<any>, (otherPl
     if (playerRef?.current) playerRef.current.pauseVideo()
   }
 
-  const handlePlay = (otherVideoPlaying: boolean=false) => {
+  const handlePlay = (otherVideoPlaying: boolean = false) => {
     setIsOtherPlaying(otherVideoPlaying)
     onPlay()
   }
-  const handlePause = (otherVideoPlaying: boolean=false) => {
+  const handlePause = (otherVideoPlaying: boolean = false) => {
     setIsOtherPlaying(otherVideoPlaying)
     onPause()
   }

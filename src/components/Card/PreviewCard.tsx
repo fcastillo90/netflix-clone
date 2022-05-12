@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Typography from '@mui/material/Typography';
-import { Genre, Movie, Serie } from '@/types';
+import { CategoryType, Genre, Movie, Serie } from '@/types';
 import CircleRoundedIcon from '@mui/icons-material/CircleRounded';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
@@ -9,7 +9,7 @@ import ButtonGroup from '../Button/ButtonGroup';
 
 interface PreviewCardProps {
   data: Movie | Serie;
-  category: 'movieApi' | 'serieApi';
+  category: CategoryType;
   isActive: boolean;
   handleMoreInfo?: (movieId: number) => void;
 }

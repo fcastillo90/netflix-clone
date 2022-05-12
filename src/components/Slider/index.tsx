@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react'
 import { Button, Typography } from '@mui/material';
 import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRounded';
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
-import { Movie, Serie } from '@/types'
+import { CategoryType, Movie, Serie } from '@/types'
 import { getImgUrl } from '@/utils/getUrl';
 import theme from '@/styles';
 import { PreviewCard, Image } from '@/components';
@@ -15,7 +15,7 @@ interface SliderProps {
   slug: string;
   isTopTen: boolean | undefined;
   handleDetailModal?: (index: number) => void;
-  category: 'movieApi' | 'serieApi';
+  category: CategoryType;
 }
 
 const Slider = (props: SliderProps) => {
@@ -31,7 +31,6 @@ const Slider = (props: SliderProps) => {
     if (isTopTen && handleDetailModal) return handleDetailModal(movieId)
     handleClearTimer();
     setHover(index)
-    
   }
 
   const handleHover = (index: number) => {
@@ -51,10 +50,10 @@ const Slider = (props: SliderProps) => {
   const handleClearTimer = () => clearTimeout(timer);
 
   const getSlideAmount = (container: HTMLDivElement) => Math.floor(
-    isLarge && isTopTen ? 
-      container.clientWidth/(SLIDE_WIDTH*2 + 20)
+    isLarge && isTopTen ?
+      container.clientWidth / (SLIDE_WIDTH * 2 + 20)
       :
-      container.clientWidth/(SLIDE_WIDTH + 10)
+      container.clientWidth / (SLIDE_WIDTH + 10)
   )
 
 
@@ -86,10 +85,10 @@ const Slider = (props: SliderProps) => {
   const dataToRender = isTopTen ? data.slice(0, 10) : data
   const buttonStyle: React.CSSProperties = {
     position: 'absolute',
-    height: isLarge ? 
-      SLIDE_HEIGHT*3 
-      : 
-      isTopTen ? SLIDE_HEIGHT*1.5 : SLIDE_HEIGHT,
+    height: isLarge ?
+      SLIDE_HEIGHT * 3
+      :
+      isTopTen ? SLIDE_HEIGHT * 1.5 : SLIDE_HEIGHT,
     color: 'white',
     borderRadius: 0,
     zIndex: 5,
@@ -103,13 +102,13 @@ const Slider = (props: SliderProps) => {
       style={{
         scrollBehavior: 'smooth',
         paddingLeft: 56,
-        height: isLarge ? 
-          SLIDE_HEIGHT*4.75 
-          : 
-          isTopTen ? SLIDE_HEIGHT*3.2 : SLIDE_HEIGHT*2.7,
+        height: isLarge ?
+          SLIDE_HEIGHT * 4.75
+          :
+          isTopTen ? SLIDE_HEIGHT * 3.2 : SLIDE_HEIGHT * 2.7,
       }}
     >
-      <Button 
+      <Button
         key="prev"
         variant="text"
         onClick={handlePrev}
@@ -122,7 +121,7 @@ const Slider = (props: SliderProps) => {
       >
         <ArrowBackIosNewRoundedIcon />
       </Button>
-      <Button 
+      <Button
         key="next"
         variant="text"
         onClick={handleNext}
@@ -143,7 +142,7 @@ const Slider = (props: SliderProps) => {
           <div
             key={`${data.id}-${slug}`}
             onClick={() => handleClick(index, data.id)}
-            onMouseEnter={() => {handleHover(index)}} 
+            onMouseEnter={() => { handleHover(index) }}
             onMouseLeave={dismissHover}
             style={{
               position: 'relative',
@@ -154,9 +153,9 @@ const Slider = (props: SliderProps) => {
               marginRight: 10,
               zIndex: 0,
               overflow: 'hidden',
-              height: isLarge ? 
-                SLIDE_HEIGHT*3 
-                : 
+              height: isLarge ?
+                SLIDE_HEIGHT * 3
+                :
                 SLIDE_HEIGHT,
               ...(isActive && {
                 backgroundColor: theme.palette.background.paper,
@@ -171,10 +170,10 @@ const Slider = (props: SliderProps) => {
               ...(isTopTen && {
                 textAlign: "right",
                 width: SLIDE_WIDTH,
-                height: SLIDE_HEIGHT*1.5,
+                height: SLIDE_HEIGHT * 1.5,
                 ...(isLarge && {
-                  width: SLIDE_WIDTH*2 + 10,
-                  height: SLIDE_HEIGHT*3,
+                  width: SLIDE_WIDTH * 2 + 10,
+                  height: SLIDE_HEIGHT * 3,
                 }),
               })
             }}
@@ -184,26 +183,26 @@ const Slider = (props: SliderProps) => {
                 style={{
                   position: 'absolute',
                   width: 'min-content',
-                  letterSpacing: -SLIDE_WIDTH/4.3,
-                  right: lastInTopTen ? 
-                    SLIDE_WIDTH/2.5 
-                    : 
-                    SLIDE_WIDTH/2,
+                  letterSpacing: -SLIDE_WIDTH / 4.3,
+                  right: lastInTopTen ?
+                    SLIDE_WIDTH / 2.5
+                    :
+                    SLIDE_WIDTH / 2,
                   color: 'black',
                   textShadow: `3px 3px 0 ${theme.palette.secondary.light}, 
                     -3px -3px 0 ${theme.palette.secondary.light}, 
                     3px -3px 0 ${theme.palette.secondary.light}, 
                     -3px 3px 0 ${theme.palette.secondary.light}, 
                     3px 3px 0 ${theme.palette.secondary.light}`,
-                  fontSize: SLIDE_HEIGHT*2,
+                  fontSize: SLIDE_HEIGHT * 2,
                   zIndex: -1,
                   lineHeight: 0.75,
                   ...(isLarge && {
-                    fontSize: SLIDE_HEIGHT*4,
-                    letterSpacing: -SLIDE_WIDTH/2.15,
-                    right: lastInTopTen ? 
-                      SLIDE_WIDTH/1.1
-                      : 
+                    fontSize: SLIDE_HEIGHT * 4,
+                    letterSpacing: -SLIDE_WIDTH / 2.15,
+                    right: lastInTopTen ?
+                      SLIDE_WIDTH / 1.1
+                      :
                       SLIDE_WIDTH
                   })
                 }}
@@ -212,14 +211,14 @@ const Slider = (props: SliderProps) => {
               </Typography>
             )}
             <Image
-              src={getImgUrl(isLarge || isTopTen ? data.poster_path : data.backdrop_path, 'w500')} 
-              alt={(data as Movie).title || (data as Serie).name} 
+              src={getImgUrl(isLarge || isTopTen ? data.poster_path : data.backdrop_path, 'w500')}
+              alt={(data as Movie).title || (data as Serie).name}
               style={{
                 objectFit: 'contain',
                 width: isTopTen ? '50%' : '100%',
               }}
             />
-            <PreviewCard 
+            <PreviewCard
               category={category}
               data={data}
               isActive={isActive}

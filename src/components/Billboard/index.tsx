@@ -3,17 +3,19 @@ import { Button, Container, Grid, Typography, useMediaQuery, useTheme } from "@m
 import NetflixLogo from '@/assets/icon.png'
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { GradientBottom, YoutubeEmbed } from '@/components'
+import { GradientBottom, YoutubeEmbed } from '@/components'
 import { useGetMovieVideosQuery } from "@/store/services/ApiMovieSlice";
 import useWindowDimensions from "@/hooks/useWindowDimensions";
 import { useGetSerieVideosQuery } from "@/store/services/ApiSerieSlice";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
 import useVideoHook from "@/hooks/useVideoHook";
 import { useEffect } from "react";
+import { openModal } from "@/store/features/modalSlice";
+import { CategoryType } from "@/types";
 
 interface BillboardProps {
-  category: 'movieApi' | 'serieApi';
+  category: CategoryType;
   id: number;
   title: string;
   image: string;
@@ -21,19 +23,27 @@ interface BillboardProps {
 }
 
 const Billboard = (props: BillboardProps) => {
-  const {category, id, title, image, overview} = props;
+  const dispatch = useDispatch()
+  const { category, id, title, image, overview } = props;
   const isOpen = useSelector((state: RootState) => state.modal.isOpen)
   const [playerRef, containerRef, handlePlay, handlePause] = useVideoHook();
   const theme = useTheme();
   const { width } = useWindowDimensions()
   const isViewMdUp = useMediaQuery(theme.breakpoints.up('md'));
   
-  
-  const { data } =  category === 'movieApi' ? 
-    useGetMovieVideosQuery(id) 
-    : 
+  const height = isViewMdUp ? width * 0.5625 : width * 0.4
+
+  const { data } = category === CategoryType.MOVIE ?
+    useGetMovieVideosQuery(id)
+    :
     useGetSerieVideosQuery(id)
-  const height = isViewMdUp ? width*0.5625 : width*0.4
+
+  const handleMoreInfo = () => {
+    dispatch(openModal({
+      id,
+      category,
+    }))
+  }
 
   useEffect(() => {
     if (isOpen) handlePause(true)
@@ -47,20 +57,20 @@ const Billboard = (props: BillboardProps) => {
         position: 'absolute',
         zIndex: -1,
         overflow: 'hidden',
-        height: isViewMdUp ?  "56.25vw": "40vw"
+        height: isViewMdUp ? "56.25vw" : "40vw"
       }}>
         <GradientBottom />
-          {data?.results && data?.results[0] &&
-            <div ref={containerRef}>
-              <YoutubeEmbed 
-                id={data?.results[0]?.key} 
-                width={width}
-                height={height + 120}
-                margin='-60px 0 0 0'
-                ref={playerRef}
-              />
-            </div>
-          }
+        {data?.results && data?.results[0] &&
+          <div ref={containerRef}>
+            <YoutubeEmbed
+              id={data?.results[0]?.key}
+              width={width}
+              height={height + 240}
+              margin='-120px 0 0 0'
+              ref={playerRef}
+            />
+          </div>
+        }
         <img
           src={getImgUrl(image, 'original')}
           alt={title}
@@ -83,7 +93,7 @@ const Billboard = (props: BillboardProps) => {
           justifyContent="flex-start"
           alignItems="center"
           style={{
-            height: isViewMdUp ?  "44vw": "30vw"
+            height: isViewMdUp ? "44vw" : "30vw"
           }}
         >
           <Grid
@@ -108,13 +118,13 @@ const Billboard = (props: BillboardProps) => {
                   marginRight: 6
                 }}
               />
-              <h3 style={{color: "rgba(255,255,255,0.7"}}>
-                {category === 'movieApi' ? 'FILM' : 'SERIE'}
+              <h3 style={{ color: "rgba(255,255,255,0.7" }}>
+                {category === CategoryType.MOVIE ? 'FILM' : 'SERIE'}
               </h3>
             </div>
             <h1 style={{ margin: 0, textAlign: 'center', fontSize: '2.8rem' }}>{title}</h1>
-            <Typography 
-              variant="body1" 
+            <Typography
+              variant="body1"
               paragraph={true}
               noWrap={true}
             >
@@ -127,16 +137,17 @@ const Billboard = (props: BillboardProps) => {
                 color: 'black'
               }}
             >
-              <PlayArrowRoundedIcon fontSize="large" style={{marginRight: 2}} /> Play
+              <PlayArrowRoundedIcon fontSize="large" style={{ marginRight: 2 }} /> Play
             </Button>
             <Button
+              onClick={handleMoreInfo}
               variant="contained"
               style={{
                 backgroundColor: "rgba(255,255,255,0.5)",
                 color: 'black'
               }}
             >
-              <InfoOutlinedIcon fontSize="large" style={{marginRight: 6}} /> More Info
+              <InfoOutlinedIcon fontSize="large" style={{ marginRight: 6 }} /> More Info
             </Button>
           </Grid>
 

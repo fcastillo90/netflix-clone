@@ -216,4 +216,9 @@ export interface GetVideos {
   results: Video[];
 }
 
-export type CategoryProp = 'movieApi' | 'serieApi' | false;
+export enum CategoryType {
+  MOVIE = "movieApi",
+  SERIE = "serieApi",
+}
+
+export type CategoryProp = CategoryType | false;

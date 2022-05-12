@@ -1,5 +1,6 @@
 import { Billboard, DataRow } from "@/components";
 import { useGetPopularMoviesQuery } from "@/store/services/ApiMovieSlice";
+import { CategoryType } from "@/types";
 
 const BrowseMovie = () => {
   const { data: popularData, isLoading: isLoadingPopular } = useGetPopularMoviesQuery(null)
@@ -15,14 +16,14 @@ const BrowseMovie = () => {
   return (
     <>
       <Billboard 
-        category="movieApi"
+        category={CategoryType.MOVIE}
         id={id}
         title={title}
         image={backdrop_path ?? poster_path}
         overview={overview}
       />
       {popularData && <DataRow
-        category="movieApi"
+        category={CategoryType.MOVIE}
         data={popularData}
         title="Popular on Netflix"
       />}

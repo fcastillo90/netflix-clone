@@ -1,8 +1,8 @@
 import { Billboard, DataRow, Modal } from "@/components";
 import { useGetPopularSerieQuery } from "@/store/services/ApiSerieSlice";
+import { CategoryType } from "@/types";
 
 const BrowseTv = () => {
-
   const { data: popularData, isLoading: isLoadingPopular } = useGetPopularSerieQuery(null)
 
   const {
@@ -17,14 +17,14 @@ const BrowseTv = () => {
   return (
     <>
       <Billboard 
-        category="serieApi"
+        category={CategoryType.SERIE}
         id={id}
         title={name}
         image={backdrop_path ?? poster_path}
         overview={overview}
       />
       {popularData && <DataRow
-        category="serieApi"
+        category={CategoryType.SERIE}
         data={popularData}
         title="Popular on Netflix"
       />}

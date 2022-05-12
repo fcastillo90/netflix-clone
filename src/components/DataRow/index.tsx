@@ -1,13 +1,13 @@
 import {  Typography } from "@mui/material"
-import { MovieList, SerieList } from "@/types";
-import { Slider, Modal } from "@/components"
+import { CategoryType, MovieList, SerieList } from "@/types";
+import { Slider } from "@/components"
 import { getSlug } from "@/utils/getSlug";
-import { memo, useState } from "react";
+import { memo } from "react";
 import { useDispatch } from "react-redux";
 import { openModal } from "@/store/features/modalSlice";
 
 interface DataRowProps {
-  category: 'movieApi' | 'serieApi';
+  category: CategoryType;
   data: MovieList | SerieList;
   title: string;
   isLarge?: boolean;
