@@ -27,10 +27,14 @@ const LinkList = () => {
             style={({isActive}) => (
               {
                 textDecoration: 'none', 
-                color: isActive ? 'white' : '#e5e5e5', 
-                ...isActive && {fontWeight: 700}
+                color: '#e5e5e5', 
+                ...isActive && {
+                  color: 'white',
+                  fontWeight: 700
+                }
               }
             )}
+            end
           >
             {page.label}
           </NavLink>
