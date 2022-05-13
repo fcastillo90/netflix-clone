@@ -13,6 +13,7 @@ import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 
 
 const Watch = () => {
+  let containerRef = useRef<any>(null);
   let playerRef = useRef<any>(null);
   const {category, id} = useParams()
   const dispatch = useDispatch()
@@ -45,6 +46,7 @@ const Watch = () => {
   const handleSeek = (time: number) => playerRef.current.seekTo(time)
   const handleVolume = (volume: number) => playerRef.current.setVolume(volume)
   const handleGetCurrentTime = () => playerRef.current.getCurrentTime()
+  const handleFullscreen = () => containerRef.current.requestFullscreen()
 
   useEffect(() => {
     dispatch(setNavbarVisibility(false))
@@ -53,6 +55,7 @@ const Watch = () => {
 
   return (
     <div
+      ref={containerRef}
       style={{
         overflow: 'hidden',
         width: width,
@@ -69,6 +72,7 @@ const Watch = () => {
           handleSeek={handleSeek}
           handleVolume={handleVolume}
           handleGetCurrentTime={handleGetCurrentTime}
+          handleFullscreen={handleFullscreen}
         />
         <YoutubeEmbed
           height={height + 320}

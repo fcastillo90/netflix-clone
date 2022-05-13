@@ -1,4 +1,4 @@
-import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
+import KeyboardBackspaceRoundedIcon from '@mui/icons-material/KeyboardBackspaceRounded';
 import EmojiFlagsRoundedIcon from '@mui/icons-material/EmojiFlagsRounded';
 import { Box, ClickAwayListener, IconButton, Popper, Slider, Typography } from "@mui/material"
 import { useEffect, useState } from 'react';
@@ -28,12 +28,13 @@ interface HudProps {
   handleSeek: (value: number) => void;
   handleVolume: (value: number) => void;
   handleGetCurrentTime: () => number;
+  handleFullscreen: () => void;
 }
 
 const fontSize = 60
 
 const Hud = (props: HudProps) => {
-  const {duration, data, handlePlay, handlePause, handleSeek, handleVolume, handleGetCurrentTime} = props
+  const {duration, data, handlePlay, handlePause, handleSeek, handleVolume, handleGetCurrentTime, handleFullscreen} = props
   const navigate = useNavigate();
   const [position, setPosition] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -119,7 +120,7 @@ const Hud = (props: HudProps) => {
           fontSize
         }}
       >
-        <ArrowBackRoundedIcon fontSize="inherit" />
+        <KeyboardBackspaceRoundedIcon fontSize="inherit" />
       </IconButton>
 
       <IconButton 
@@ -160,6 +161,7 @@ const Hud = (props: HudProps) => {
             step={1}
             value={position}
             valueLabelDisplay="auto"
+            valueLabelFormat={getFormattedDuration}
             sx={{
               zIndex: 5,
               color: theme.palette.primary.main,
@@ -168,7 +170,7 @@ const Hud = (props: HudProps) => {
                 color: theme.palette.primary.main,
                 width: 16,
                 height: 16,
-                transition: '0.3s cubic-bezier(.47,1.64,.41,.8)',
+                transition: '0.3s ease',
                 '&:before': {
                   boxShadow: '0 2px 12px 0 rgba(0,0,0,0.4)',
                 },
@@ -337,6 +339,7 @@ const Hud = (props: HudProps) => {
               <SpeedRoundedIcon fontSize="inherit" />
             </IconButton>
             <IconButton 
+              onClick={handleFullscreen}
               aria-label="Fullscreen"
               style={{
                 color: 'white',
