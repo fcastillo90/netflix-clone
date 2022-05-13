@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import { openModal } from "@/store/features/modalSlice";
 import { CategoryType } from "@/types";
 import { useNavigate } from "react-router-dom";
+import { getHeight16by9 } from "@/utils";
 
 interface BillboardProps {
   category: CategoryType;
@@ -66,7 +67,8 @@ const Billboard = (props: BillboardProps) => {
         position: 'absolute',
         zIndex: -1,
         overflow: 'hidden',
-        height: isViewMdUp ? "56.25vw" : "40vw"
+        height: isViewMdUp ? "56.25vw" : "40vw",
+        minHeight: getHeight16by9(height),
       }}>
         <GradientBottom />
         {video.key &&
@@ -102,13 +104,15 @@ const Billboard = (props: BillboardProps) => {
           justifyContent="flex-start"
           alignItems="center"
           style={{
-            height: isViewMdUp ? "44vw" : "30vw"
+            height: isViewMdUp ? "44vw" : "30vw",
+            minHeight: getHeight16by9(height),
           }}
         >
           <Grid
             item
             xs={12}
-            sm={4}
+            sm={8}
+            md={4}
           >
             <div
               style={{
@@ -131,7 +135,7 @@ const Billboard = (props: BillboardProps) => {
                 {category === CategoryType.MOVIE ? 'FILM' : 'SERIE'}
               </h3>
             </div>
-            <h1 style={{ margin: 0, textAlign: 'center', fontSize: '2.8rem' }}>{title}</h1>
+            <Typography variant="h3" component="h2" style={{ margin: 0, textAlign: 'center' }}>{title}</Typography>
             <Typography
               variant="body1"
               paragraph={true}

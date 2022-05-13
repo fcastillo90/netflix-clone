@@ -67,6 +67,7 @@ const ModalComponent = (props: ModalProps) => {
           sx={{
             position: 'absolute',
             width: modalWidth,
+            maxWidth: '90%',
             bgcolor: 'background.default',
             border: '2px solid #000',
             boxShadow: 24,
