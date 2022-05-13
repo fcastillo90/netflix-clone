@@ -7,9 +7,12 @@ import LinkList from "./LinkList";
 import PersonIcon from '@mui/icons-material/Person';
 import HelpOutlineRoundedIcon from '@mui/icons-material/HelpOutlineRounded';
 import SearchInput from "../Input/SearchInput";
+import { RootState } from "@/store";
+import { useSelector } from "react-redux";
 
 const NavBar = () => {
   const [isTransparent, setIsTransparent] = useState(true);
+  const showNavbar = useSelector((state: RootState) => state.config.navbar.isVisible)
 
   const handleScrollEvent = () => {
     if (isTransparent && window.scrollY > 1) {
@@ -38,7 +41,8 @@ const NavBar = () => {
           transition: 'all 0.5s',
           paddingLeft: '3.5rem',
           paddingRight: '3.5rem',
-          background: isTransparent ? "linear-gradient(rgba(20,20,20,0.75) 0%, rgba(20,20,20,0) 100%)" : '#000000'
+          background: isTransparent ? "linear-gradient(rgba(20,20,20,0.75) 0%, rgba(20,20,20,0) 100%)" : '#000000',
+          display: showNavbar ? 'flex' : 'none'
         }}
       >
         <Grid 

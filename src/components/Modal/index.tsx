@@ -9,6 +9,7 @@ import { CategoryProp, CategoryType, MovieDetail, SerieDetail } from "@/types";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { closeModal } from "@/store/features/modalSlice";
+import { useNavigate } from "react-router-dom";
 
 interface ModalProps {
   category: CategoryProp;
@@ -21,6 +22,7 @@ const playerHeight = 478
 
 const ModalComponent = (props: ModalProps) => {
   const { id, category, handleClose } = props
+  const navigate = useNavigate()
 
   const getDetailData = () => {
     if (id) {
@@ -37,8 +39,14 @@ const ModalComponent = (props: ModalProps) => {
     return { data: undefined }
   }
 
+
+  const handleWatch = () => {
+    navigate(`/watch/${(category as string)[0]}/${id}`)
+  }
+
   const { data, isLoading } = getDetailData()
   const { data: videoData } = getVideoData()
+  const video = videoData?.results.find((result) => result.site === 'YouTube') ?? { key: '' }
     
   return (<Modal
     open={true}
@@ -108,9 +116,9 @@ const ModalComponent = (props: ModalProps) => {
                     }}
                     alt={(data as MovieDetail)?.title ?? (data as SerieDetail)?.name}
                   />
-                  {videoData?.results && videoData?.results[0] &&
+                  {video.key &&
                     <YoutubeEmbed
-                      id={videoData?.results[0].key}
+                      id={video.key}
                       width={modalWidth}
                       height={playerHeight}
                     />
@@ -140,6 +148,7 @@ const ModalComponent = (props: ModalProps) => {
                     </Typography>
                     <ButtonGroup
                       isLarge={true}
+                      handleWatch={handleWatch}
                     />
                   </div>
                 </div>

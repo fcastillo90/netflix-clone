@@ -2,14 +2,15 @@ import { forwardRef, MutableRefObject, useEffect, useRef, useState } from "react
 import YouTube from "react-youtube";
 
 interface YoutubeEmbedProps {
-  id: string;
-  width: string | number;
   height: string | number;
+  id: string;
   margin?: string | number;
+  onReady?: (duration: number) => void;
+  width: string | number;
 }
 
 const YoutubeEmbed = forwardRef((props: YoutubeEmbedProps, ref) => {
-  const { id, width, height, margin=0 } = props
+  const { id, width, height, margin=0, onReady } = props
   const [isVisible, setIsVisible] = useState(false);
 
   return (
@@ -28,15 +29,16 @@ const YoutubeEmbed = forwardRef((props: YoutubeEmbedProps, ref) => {
           playerVars: {
             autoplay: 1,
             controls: 0,
-            showinfo: 0,
-            rel: 0,
+            enablejsapi: 1,
             modestbranding: 1,
-            enablejsapi: 1
+            rel: 0,
+            showinfo: 0,
           },
         }}
         onReady={(e) => {
           e.target.playVideo();
           if (ref) (ref as MutableRefObject<any>).current = e.target;
+          if (onReady) onReady(e.target.getDuration())
         }}
         onPlay={() => {
           setIsVisible(true)

@@ -13,6 +13,7 @@ import useVideoHook from "@/hooks/useVideoHook";
 import { useEffect } from "react";
 import { openModal } from "@/store/features/modalSlice";
 import { CategoryType } from "@/types";
+import { useNavigate } from "react-router-dom";
 
 interface BillboardProps {
   category: CategoryType;
@@ -24,6 +25,7 @@ interface BillboardProps {
 
 const Billboard = (props: BillboardProps) => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const { category, id, title, image, overview } = props;
   const isOpen = useSelector((state: RootState) => state.modal.isOpen)
   const [playerRef, containerRef, handlePlay, handlePause] = useVideoHook();
@@ -45,7 +47,12 @@ const Billboard = (props: BillboardProps) => {
     }))
   }
 
+  const handleWatch = () => {
+    navigate(`/watch/${category[0]}/${id}`)
+  }
+
   const { data } = getData()
+  const video = data?.results.find((result) => result.site === 'YouTube') ?? { key: '' }
 
   useEffect(() => {
     if (isOpen) handlePause(true)
@@ -62,13 +69,13 @@ const Billboard = (props: BillboardProps) => {
         height: isViewMdUp ? "56.25vw" : "40vw"
       }}>
         <GradientBottom />
-        {data?.results && data?.results[0] &&
+        {video.key &&
           <div ref={containerRef}>
             <YoutubeEmbed
-              id={data?.results[0]?.key}
+              id={video.key}
               width={width}
-              height={height + 240}
-              margin='-120px 0 0 0'
+              height={height + 320}
+              margin='-160px 0 0 0'
               ref={playerRef}
             />
           </div>
@@ -135,9 +142,11 @@ const Billboard = (props: BillboardProps) => {
             <Button
               variant="contained"
               style={{
+                backgroundColor: "white",
                 marginRight: 8,
                 color: 'black'
               }}
+              onClick={handleWatch}
             >
               <PlayArrowRoundedIcon fontSize="large" style={{ marginRight: 2 }} /> Play
             </Button>

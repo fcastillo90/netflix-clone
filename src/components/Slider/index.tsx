@@ -196,7 +196,7 @@ const Slider = (props: SliderProps) => {
                     3px 3px 0 ${theme.palette.secondary.light}`,
                   fontSize: SLIDE_HEIGHT * 2,
                   zIndex: -1,
-                  lineHeight: 0.75,
+                  lineHeight: 0.78,
                   ...(isLarge && {
                     fontSize: SLIDE_HEIGHT * 4,
                     letterSpacing: -SLIDE_WIDTH / 2.15,

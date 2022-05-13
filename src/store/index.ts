@@ -1,5 +1,6 @@
 import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit'
 import logger from 'redux-logger';
+import { configSlice } from './features/configSlice';
 import { modalSlice } from './features/modalSlice';
 import { movieApi } from './services/ApiMovieSlice';
 import { serieApi } from './services/ApiSerieSlice';
@@ -9,6 +10,7 @@ export const store = configureStore({
     [movieApi.reducerPath]: movieApi.reducer,
     [serieApi.reducerPath]: serieApi.reducer,
     modal: modalSlice.reducer,
+    config: configSlice.reducer
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(
     movieApi.middleware, 

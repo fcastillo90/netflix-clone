@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/store';
 import theme from '@/styles';
 import ButtonGroup from '../Button/ButtonGroup';
+import { useNavigate } from 'react-router-dom';
 
 interface PreviewCardProps {
   data: Movie | Serie;
@@ -16,12 +17,17 @@ interface PreviewCardProps {
 
 const PreviewCard = (props: PreviewCardProps) => {
   const { category, data, isActive, handleMoreInfo } = props;
+  const navigate = useNavigate()
 
   const dataApi: any = useSelector((state: RootState) => state[category]?.queries['getGenreList(null)']?.data);
 
   const getGenres = (genresIds: number[]) =>
     genresIds.map((id) => 
       dataApi?.genres.find((genre: Genre) => genre.id === id))
+
+  const handleWatch = () => {
+    navigate(`/watch/${category[0]}/${data.id}`)
+  }
 
   return (
       
@@ -30,6 +36,7 @@ const PreviewCard = (props: PreviewCardProps) => {
       padding: 16
     }}>
       <ButtonGroup
+        handleWatch={handleWatch}
         handleMoreInfo={handleMoreInfo}
         movie={data}
       />

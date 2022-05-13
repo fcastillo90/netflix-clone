@@ -1,6 +1,6 @@
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
-import { BrowseRoute, BrowseTvRoute, BrowseMovieRoute, NoMatchRoute } from '@/routes'
+import { BrowseRoute, BrowseTvRoute, BrowseMovieRoute, NoMatchRoute, WatchRoute } from '@/routes'
 import theme from '@/styles'
 import { NavBar } from './components'
 import { useGetGenreListQuery as useGetMovieGenreListQuery } from '@/store/services/ApiMovieSlice'
@@ -22,6 +22,7 @@ function App() {
             <Route path="/browse/movie" element={<BrowseMovieRoute />} />
           </Route>
           <Route path="/latest" element={<BrowseMovieRoute />} />
+          <Route path="/watch/:category/:id" element={<WatchRoute />} />
           <Route path="*" element={<NoMatchRoute />} />
         </Routes>
       </BrowserRouter>

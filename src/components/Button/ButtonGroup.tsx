@@ -11,10 +11,11 @@ interface ButtonGroupProps {
   movie?: Movie | Serie;
   isLarge?: boolean;
   handleMoreInfo?: (movieId: number) => void;
+  handleWatch?: () => void;
 }
 
 const ButtonGroup = (props: ButtonGroupProps) => {
-  const {movie, isLarge, handleMoreInfo} = props;
+  const {movie, isLarge, handleMoreInfo, handleWatch} = props;
   return (
     <div
       style={{
@@ -24,6 +25,7 @@ const ButtonGroup = (props: ButtonGroupProps) => {
     >
       <div>
         <Button
+          onClick={handleWatch}
           style={{
             backgroundColor: 'white',
             minWidth: 'auto',
