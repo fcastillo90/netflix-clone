@@ -1,8 +1,8 @@
-import KeyboardBackspaceRoundedIcon from '@mui/icons-material/KeyboardBackspaceRounded';
-import EmojiFlagsRoundedIcon from '@mui/icons-material/EmojiFlagsRounded';
-import { Box, ClickAwayListener, IconButton, Popper, Slider, Typography } from "@mui/material"
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Box, ClickAwayListener, Fade, Icon, IconButton, Popper, Slider, Typography } from "@mui/material"
+import KeyboardBackspaceRoundedIcon from '@mui/icons-material/KeyboardBackspaceRounded';
+import EmojiFlagsRoundedIcon from '@mui/icons-material/EmojiFlagsRounded';
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
 import Replay10RoundedIcon from '@mui/icons-material/Replay10Rounded';
 import Forward10RoundedIcon from '@mui/icons-material/Forward10Rounded';
@@ -15,6 +15,8 @@ import SpeedRoundedIcon from '@mui/icons-material/SpeedRounded';
 import SubtitlesRoundedIcon from '@mui/icons-material/SubtitlesRounded';
 import AutoAwesomeMotionRoundedIcon from '@mui/icons-material/AutoAwesomeMotionRounded';
 import SkipNextRoundedIcon from '@mui/icons-material/SkipNextRounded';
+import PlayCircleRoundedIcon from '@mui/icons-material/PlayCircleRounded';
+import PauseCircleFilledRoundedIcon from '@mui/icons-material/PauseCircleFilledRounded';
 import { Video } from '@/types';
 import theme from '@/styles';
 import getFormattedDuration from '@/utils/getFormattedDuration';
@@ -28,7 +30,7 @@ interface HudProps {
   handleSeek: (value: number) => void;
   handleVolume: (value: number) => void;
   handleGetCurrentTime: () => number;
-  handleFullscreen: () => void;
+  handleFullscreen: (e: any) => void;
 }
 
 const fontSize = 60
@@ -40,8 +42,13 @@ const Hud = (props: HudProps) => {
   const [paused, setPaused] = useState(false);
   const [volume, setVolume] = useState(100);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  let timer: NodeJS.Timeout
+  let timerHud: NodeJS.Timeout
 
-
+  const handleBack = (e: any) => {
+    e.stopPropagation()
+    navigate(-1)
+  }
   const onPlay = () => {
     setPaused(false)
     handlePlay()
@@ -50,34 +57,40 @@ const Hud = (props: HudProps) => {
     setPaused(true)
     handlePause()
   }
-  const onSeek = (_event: any, newValue: number | number[]) => {
+  const onSeek = (e: any, newValue: number | number[]) => {
     setPosition(newValue as number)
     handleSeek(newValue as number)
+    e.stopPropagation()
   }
-  const onVolume = (_event: Event, newValue: number | number[]) => {
+  const onVolume = (e: Event, newValue: number | number[]) => {
     handleVolume(newValue as number)
     setVolume(newValue as number)
+    e.stopPropagation()
   }
-  const handlePlayPause = () => {
+  const handlePlayPause = (e: any) => {
+    e.stopPropagation()
     if (paused) return onPlay()
     return onPause()
   }
-  const handleRewind = (value: number) => {
+  const handleRewind = (e: any, value: number) => {
     let newPosition = position - value
     if (newPosition < 0) newPosition = 0
     setPosition(newPosition)
     handleSeek(newPosition)
+    e.stopPropagation()
   }
-  const handleForward = (value: number) => {
+  const handleForward = (e: any, value: number) => {
     let newPosition = position + value
     if (newPosition > duration) newPosition = duration
     setPosition(newPosition)
     handleSeek(newPosition)
+    e.stopPropagation()
   }
   const handleOpenVolume = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(anchorEl ? null : event.currentTarget)
   }
-  const handleMute = () => {
+  const handleMute = (e: any) => {
+    e.stopPropagation()
     if (volume === 0) {
       setVolume(100)
       handleVolume(100)
@@ -86,11 +99,22 @@ const Hud = (props: HudProps) => {
     setVolume(0)
     handleVolume(0)
   }
-
+  const handleCloseVolume = (e: any) => {
+    setAnchorEl(null)
+    e.stopPropagation()
+  }
   const handleGetVolumeIcon = () => {
     if (volume === 0) return <VolumeOffRoundedIcon fontSize="inherit" />
     if (volume < 50) return <VolumeDownRoundedIcon fontSize="inherit" />
     return <VolumeUpRoundedIcon fontSize="inherit" />
+  }
+  const handleMouseOverHud = (e: any) => {
+    clearTimeout(timerHud)
+    e.target.style.opacity = '1'
+
+    timerHud = setTimeout(() => {
+      e.target.style.opacity = '0'
+    }, 1000)
   }
 
   useEffect(() => {
@@ -100,18 +124,35 @@ const Hud = (props: HudProps) => {
     return () => clearTimeout(timeout);
   }, [position, paused])
 
+  useEffect(() => {
+    clearTimeout(timer)
+    const playPauseIcon = document.getElementById('play-pause-icon')
+    if (playPauseIcon) {
+      playPauseIcon.style.opacity = '1'
+      timer = setTimeout(() => {
+        playPauseIcon.style.opacity = '0'
+      } , 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [paused])
+
   return (
     <div
+      id='hud-player'
+      onMouseMove={handleMouseOverHud}
+      onClick={handlePlayPause}
       style={{
         position: 'absolute',
         width: '100%',
         height: '100%',
-        zIndex: 10
+        zIndex: 10,
+        opacity: 0,
+        transition: 'opacity 0.3s linear'
       }}
     >
       <IconButton 
         aria-label="back"
-        onClick={() => navigate(-1)}
+        onClick={handleBack}
         style={{
           position: 'absolute',
           color: 'white',
@@ -135,6 +176,26 @@ const Hud = (props: HudProps) => {
       >
         <EmojiFlagsRoundedIcon fontSize="inherit" />
       </IconButton>
+
+      <div
+        id='play-pause-icon'
+        style={{
+          opacity: 0,
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          fontSize: fontSize*1.5,
+          color: 'rgba(255, 255, 255, 0.6)',
+          transition: 'opacity 0.3s linear'
+        }}
+      >
+        { paused ? 
+          <PauseCircleFilledRoundedIcon fontSize="inherit" />
+          :
+          <PlayCircleRoundedIcon fontSize="inherit" /> 
+        }
+      </div>
 
       <div
         style={{
@@ -217,7 +278,7 @@ const Hud = (props: HudProps) => {
             </IconButton>
             <IconButton 
               aria-label="Rewind"
-              onClick={() => handleRewind(10)}
+              onClick={(e) => handleRewind(e, 10)}
               style={{
                 color: 'white',
                 fontSize
@@ -227,7 +288,7 @@ const Hud = (props: HudProps) => {
             </IconButton>
             <IconButton 
               aria-label="Forward"
-              onClick={() => handleForward(10)}
+              onClick={(e) => handleForward(e, 10)}
               style={{
                 color: 'white',
                 fontSize
@@ -235,7 +296,7 @@ const Hud = (props: HudProps) => {
             >
               <Forward10RoundedIcon fontSize="inherit" />
             </IconButton>
-            <ClickAwayListener onClickAway={() => {setAnchorEl(null)}}>
+            <ClickAwayListener onClickAway={handleCloseVolume}>
               <div
                 style={{
                   display: 'inline-flex',

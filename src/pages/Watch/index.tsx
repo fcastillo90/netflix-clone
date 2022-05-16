@@ -46,7 +46,10 @@ const Watch = () => {
   const handleSeek = (time: number) => playerRef.current.seekTo(time)
   const handleVolume = (volume: number) => playerRef.current.setVolume(volume)
   const handleGetCurrentTime = () => playerRef.current.getCurrentTime()
-  const handleFullscreen = () => containerRef.current.requestFullscreen()
+  const handleFullscreen = (e: any) => {
+    containerRef.current.requestFullscreen()
+    e.stopPropagation()
+  }
 
   useEffect(() => {
     dispatch(setNavbarVisibility(false))
