@@ -48,7 +48,7 @@ const handlers = [
     )
   }),
   rest.get(`/movie/${id}/videos`, (req, res, ctx) => {
-    
+
     return res(
       ctx.status(200),
       ctx.json(movieIdVideos),

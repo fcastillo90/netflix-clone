@@ -38,7 +38,7 @@ const Slider = (props: SliderProps) => {
       handleClearTimer();
       timer = setTimeout(() => {
         setHover(index)
-      }, 500);
+      }, 200);
     }
   }
 

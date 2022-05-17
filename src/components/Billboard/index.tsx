@@ -59,20 +59,25 @@ const Billboard = (props: BillboardProps) => {
     if (isOpen) handlePause(true)
     else handlePlay(false)
   }, [isOpen])
-
   return (
     <>
-      <div style={{
-        width: '100%',
-        position: 'absolute',
-        zIndex: -1,
-        overflow: 'hidden',
-        height: isViewMdUp ? "56.25vw" : "40vw",
-        minHeight: getHeight16by9(height),
-      }}>
+      <div 
+        data-testid="billboard-img-video-container"
+        style={{
+          width: '100%',
+          position: 'absolute',
+          zIndex: -1,
+          overflow: 'hidden',
+          height: isViewMdUp ? "56.25vw" : "40vw",
+          minHeight: getHeight16by9(height),
+        }}
+      >
         <GradientBottom />
         {video.key &&
-          <div ref={containerRef}>
+          <div 
+            data-testid="billboard-video-container"
+            ref={containerRef}
+          >
             <YoutubeEmbed
               id={video.key}
               width={width}
@@ -83,6 +88,7 @@ const Billboard = (props: BillboardProps) => {
           </div>
         }
         <img
+          data-testid="billboard-img"
           src={getImgUrl(image, 'original')}
           alt={title}
           style={{
@@ -91,6 +97,7 @@ const Billboard = (props: BillboardProps) => {
         />
       </div>
       <Container
+        data-testid="billboard-info-container"
         disableGutters
         maxWidth={false}
         style={{
@@ -144,6 +151,7 @@ const Billboard = (props: BillboardProps) => {
               {overview}
             </Typography>
             <Button
+              data-testid="billboard-info-button-play"
               variant="contained"
               style={{
                 backgroundColor: "white",
@@ -155,6 +163,7 @@ const Billboard = (props: BillboardProps) => {
               <PlayArrowRoundedIcon fontSize="large" style={{ marginRight: 2 }} /> Play
             </Button>
             <Button
+              data-testid="billboard-info-button-more-info"
               onClick={handleMoreInfo}
               variant="contained"
               style={{

@@ -24,7 +24,6 @@ Work pending:
 
 - [ ] testing
 - [ ] better responsive
-- [ ] Improve memoization
 
 ## STEPS TO RUN
 

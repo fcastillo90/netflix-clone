@@ -40,8 +40,9 @@ const YoutubeEmbed = forwardRef((props: YoutubeEmbedProps, ref) => {
           if (ref) (ref as MutableRefObject<any>).current = e.target;
           if (onReady) onReady(e.target.getDuration())
         }}
-        onPlay={() => {
+        onPlay={(e) => {
           setIsVisible(true)
+          e.target.setPlaybackQuality('highres');
         }}
         onEnd={() => { 
           setIsVisible(false) 
