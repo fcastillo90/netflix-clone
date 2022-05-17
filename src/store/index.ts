@@ -6,6 +6,8 @@ import { configApi } from './services/ApiConfigSlice';
 import { movieApi } from './services/ApiMovieSlice';
 import { serieApi } from './services/ApiSerieSlice';
 
+const middleware = process.env.NODE_ENV === 'development' ? [logger] : [];
+
 export const store = configureStore({
   reducer: {
     [movieApi.reducerPath]: movieApi.reducer,
@@ -17,7 +19,8 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(
     movieApi.middleware, 
     serieApi.middleware, 
-    logger
+    configApi.middleware, 
+    ...middleware
   ),
 })
 

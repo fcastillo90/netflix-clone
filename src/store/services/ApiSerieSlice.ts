@@ -6,7 +6,7 @@ import prepareHeaders from '../apiPrepareHeaders'
 export const serieApi = createApi({
   reducerPath: 'serieApi',
   baseQuery: fetchBaseQuery({ 
-    baseUrl: import.meta.env.VITE_THEMOVIEDB_API_URL,
+    baseUrl: process.env.VITE_THEMOVIEDB_API_URL,
     prepareHeaders
   }),
   endpoints: (builder) => ({
