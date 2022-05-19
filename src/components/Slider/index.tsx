@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Button, Typography } from '@mui/material';
 import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRounded';
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
@@ -24,8 +24,9 @@ const Slider = (props: SliderProps) => {
 
   const [isPrevVisible, setPrevVisible] = useState(false)
   const [isNextVisible, setNextVisible] = useState(true)
+  const [containerWidth, setContainerWidth] = useState(0)
   const [hover, setHover] = useState<number | null>(null);
-  const sliderContainer = useRef<HTMLDivElement>(null)
+  const sliderContainer = useRef<HTMLDivElement | null>(null)
 
   const handleClick = (index: number, movieId: number) => {
     if (isTopTen && handleDetailModal) return handleDetailModal(movieId)
@@ -49,21 +50,21 @@ const Slider = (props: SliderProps) => {
 
   const handleClearTimer = () => clearTimeout(timer);
 
-  const getSlideAmount = (container: HTMLDivElement) => Math.floor(
-    isLarge && isTopTen ?
-      container.clientWidth / (SLIDE_WIDTH * 2 + 20)
-      :
-      container.clientWidth / (SLIDE_WIDTH + 10)
-  )
-
+  const getSlideAmount = useMemo(() => {
+    return Math.floor(
+      isLarge && isTopTen ?
+        containerWidth / (SLIDE_WIDTH * 2 + 20)
+        :
+        containerWidth / (SLIDE_WIDTH + 10)
+    ) * (SLIDE_WIDTH + 10)
+  }, [containerWidth, isLarge, isTopTen])
 
   const handlePrev = () => {
     if (sliderContainer.current) {
-      const amount = getSlideAmount(sliderContainer.current) * (SLIDE_WIDTH + 10)
-      sliderContainer.current.scrollLeft -= amount
+      sliderContainer.current.scrollLeft -= getSlideAmount
 
       setNextVisible(true)
-      if (sliderContainer.current?.scrollLeft - amount <= 0) {
+      if (sliderContainer.current?.scrollLeft - getSlideAmount <= 0) {
         return setPrevVisible(false)
       }
       setPrevVisible(true)
@@ -72,17 +73,17 @@ const Slider = (props: SliderProps) => {
 
   const handleNext = () => {
     if (sliderContainer.current) {
-      const amount = getSlideAmount(sliderContainer.current) * (SLIDE_WIDTH + 10)
-      sliderContainer.current.scrollLeft += amount
+      sliderContainer.current.scrollLeft += getSlideAmount
 
-      if (sliderContainer.current?.scrollLeft + amount >= sliderContainer.current?.scrollWidth - sliderContainer.current?.clientWidth) {
+      if (sliderContainer.current?.scrollLeft + getSlideAmount >= sliderContainer.current?.scrollWidth - sliderContainer.current?.clientWidth) {
         setNextVisible(false)
       }
       setPrevVisible(true)
     }
   }
 
-  const dataToRender = isTopTen ? data.slice(0, 10) : data
+  const dataToRender = useMemo(() => isTopTen ? data.slice(0, 10) : data, [data, isTopTen])
+
   const buttonStyle: React.CSSProperties = {
     position: 'absolute',
     height: isLarge ?
@@ -94,11 +95,18 @@ const Slider = (props: SliderProps) => {
     zIndex: 5,
   }
 
+  const onRefChange = useCallback((node: HTMLDivElement | null) => {
+    if (node !== null) {
+      setContainerWidth(node.clientWidth)
+      sliderContainer.current = node
+    }
+  }, []);
+
   return (
     <div
       className="sliderContainer"
       onScroll={dismissHover}
-      ref={sliderContainer}
+      ref={onRefChange}
       style={{
         scrollBehavior: 'smooth',
         paddingLeft: 56,
